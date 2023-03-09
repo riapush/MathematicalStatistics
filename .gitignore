@@ -1,0 +1,8 @@
+.idea/
+*.xml
+*.iml
+lab1/task1/
+lab1/task2/
+lab1/task3/
+lab1/task4/
+lab1/__pycache__/
