@@ -8,6 +8,7 @@ from lab1.utils import get_distribution, get_density, types, compute_trimmed_mea
 
 num_bins = 15
 
+
 def plot_hist():
     sizes = [10, 50, 1000]
     if not os.path.isdir("lab1/task1"):
@@ -21,6 +22,8 @@ def plot_hist():
             n, bins, patches = ax[i].hist(array, num_bins, density=True, edgecolor='blue', alpha=0.2)
             ax[i].plot(bins, get_density(name, bins), color='blue', linewidth=1)
             ax[i].set_title("n = " + str(sizes[i]))
+        if name == 'poisson':
+            plt.show()
         plt.savefig("lab1/task1/" + name + ".png")
 
 
@@ -30,6 +33,7 @@ def compute_stat_values():
         os.makedirs("lab1/task2")
     repeats = 1000
     for name in types:
+        val = 2
         for size in sizes:
             mean, med, zr, zq, ztr = [], [], [], [], []
             for _ in range(repeats):
@@ -43,17 +47,28 @@ def compute_stat_values():
                 f.write("\\begin{tabular}{|c|c|c|c|c|c|}\n")
                 f.write("\\hline\n")
                 f.write("& \\bar{x} & mediana & z_r & z_Q & z_tr & \\\\\n")
-                f.write("E(z) & " + f"{np.around(np.mean(mean), decimals=4)} & "
-                                    f"{np.around(np.mean(med), decimals=4)} & "
-                                    f"{np.around(np.mean(zr), decimals=4)} & "
-                                    f"{np.around(np.mean(zq), decimals=4)} & "
-                                    f"{np.around(np.mean(ztr), decimals=4)} & \\\\\n")
+                f.write("E(z) & " + f"{np.around(np.mean(mean), decimals=val)} & "
+                                    f"{np.around(np.mean(med), decimals=val)} & "
+                                    f"{np.around(np.mean(zr), decimals=val)} & "
+                                    f"{np.around(np.mean(zq), decimals=val)} & "
+                                    f"{np.around(np.mean(ztr), decimals=val)} & \\\\\n")
                 f.write("\\hline\n")
-                f.write("D(z) & " + f"{np.around(np.mean(np.multiply(mean, mean)) - np.mean(mean) * np.mean(mean), decimals=4)} & "
-                                    f"{np.around(np.mean(np.multiply(med, med)) - np.mean(med) * np.mean(med), decimals=4)} & "
-                                    f"{np.around(np.mean(np.multiply(zr, zr)) - np.mean(zr) * np.mean(zr), decimals=4)} & "
-                                    f"{np.around(np.mean(np.multiply(zq, zq)) - np.mean(zq) * np.mean(zq), decimals=4)} & "
-                                    f"{np.around(np.mean(np.multiply(ztr, ztr)) - np.mean(ztr) * np.mean(ztr), decimals=4)} & \\\\\n")
+                f.write("D(z) & " + f"{np.around(np.mean(np.multiply(mean, mean)) - np.mean(mean) * np.mean(mean), decimals=val)} & "
+                                    f"{np.around(np.mean(np.multiply(med, med)) - np.mean(med) * np.mean(med), decimals=val)} & "
+                                    f"{np.around(np.mean(np.multiply(zr, zr)) - np.mean(zr) * np.mean(zr), decimals=val)} & "
+                                    f"{np.around(np.mean(np.multiply(zq, zq)) - np.mean(zq) * np.mean(zq), decimals=val)} & "
+                                    f"{np.around(np.mean(np.multiply(ztr, ztr)) - np.mean(ztr) * np.mean(ztr), decimals=val)} & \\\\\n")
+                f.write("\\hline\n")
+                f.write("x & " + f"[{np.around(np.mean(mean), decimals=val) - np.sqrt(np.around(np.mean(np.multiply(mean, mean)) - np.mean(mean) * np.mean(mean), decimals=val)):.2f}; "
+                                 f"{np.around(np.mean(mean), decimals=val) + np.sqrt(np.around(np.mean(np.multiply(mean, mean)) - np.mean(mean) * np.mean(mean), decimals=val)):.2f}] & "
+                                 f"[{np.around(np.mean(med), decimals=val) - np.sqrt(np.around(np.mean(np.multiply(med, med)) - np.mean(med) * np.mean(med), decimals=val)):.2f}; "
+                                 f"{np.around(np.mean(med), decimals=val) + np.sqrt(np.around(np.mean(np.multiply(med, med)) - np.mean(med) * np.mean(med), decimals=val)):.2f}] & "
+                                 f"[{np.around(np.mean(zr), decimals=val) - np.sqrt(np.around(np.mean(np.multiply(zr, zr)) - np.mean(zr) * np.mean(zr), decimals=val)):.2f}; "
+                                 f"{np.around(np.mean(zr), decimals=val) + np.sqrt(np.around(np.mean(np.multiply(zr, zr)) - np.mean(zr) * np.mean(zr), decimals=val)):.2f}] & "
+                                 f"[{np.around(np.mean(zq), decimals=val) - np.sqrt(np.around(np.mean(np.multiply(zq, zq)) - np.mean(zq) * np.mean(zq), decimals=val)):.2f}; "
+                                 f"{np.around(np.mean(zq), decimals=val) + np.sqrt(np.around(np.mean(np.multiply(zq, zq)) - np.mean(zq) * np.mean(zq), decimals=val)):.2f}] & "
+                                 f"[{np.around(np.mean(ztr), decimals=val) - np.sqrt(np.around(np.mean(np.multiply(ztr, ztr)) - np.mean(ztr) * np.mean(ztr), decimals=val)):.2f}; "
+                                 f"{np.around(np.mean(ztr), decimals=val) + np.sqrt(np.around(np.mean(np.multiply(ztr, ztr)) - np.mean(ztr) * np.mean(ztr), decimals=val)):.2f}] & \\\\n")
                 f.write("\\end{tabular}")
 
 
@@ -188,9 +203,9 @@ def kernel():
 
 
 if __name__ == "__main__":
-    plot_hist()
+    #plot_hist()
     compute_stat_values()
-    box_plot_tukey()
-    count_emissions()
-    empiric()
-    kernel()
+    #box_plot_tukey()
+    #count_emissions()
+    #empiric()
+    #kernel()
